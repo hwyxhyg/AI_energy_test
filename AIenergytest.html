@@ -687,7 +687,7 @@
 
             document.getElementById('scoreDisplay').textContent = `您的得分: ${score}分`;
             document.getElementById('levelDisplay').innerHTML = `<span class="${result.class}">${result.level} - ${result.title}</span>`;
-            document.getElementById('descriptionDisplay').textContent = result.description;
+            document.getElementById('descriptionDisplay').innerContent = result.description;
 
             // Hide quiz pages and show result
             document.querySelectorAll('.page').forEach(page => {
