@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI 能耗漂绿策略可视化</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Microsoft YaHei",
+                   "PingFang SC", sans-serif;
+      background: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const categories = [
+      { 
+        text: '情感操纵', 
+        weight: 9.2, 
+        textaid:'煽动民族主义情绪，或者通过具体的人情案例进行说服',
+        color: '#822800',
+        examples: [
+          '"正如你所知，用于制造风力发电机和太阳能电池板的精炼关键矿物90%都在中国，而且是在中国燃煤电网中。所以，购买中国制造的技术是一笔棘手的交易。"',
+          '"我认为整个行业都会竭尽所能"',
+          '"您认为在人工智能军备竞赛中输给中国和气候变化，哪个对国家未来安全构成更大的威胁？"',
+          '"我今天早上看到一篇发表在《自然》杂志上的新论文，讲述了一位多年无法说话、全身瘫痪的女性，通过脑部扫描，能够通过意念说话，语速达到每分钟90个单词，比我说话的速度略慢，但差距不大。"',
+          '"为了国家安全和经济繁荣，我们必须在人工智能领域保持全球领先地位。"'
+        ]
+      },
+      { 
+        text: '转移焦点', 
+        weight: 8.8,
+        textaid :'谈论其他问题或者威胁',
+        color: '#9e5c9b',
+        examples: [
+          '"这是因为计算能效的提升使得计算成本更低、操作更便捷、速度更快，而这种提升在相当长的一段时间内将超越所有表面上的能效提升。"',
+          '"我认为解决方案之一是更多地利用一百年前公用事业行业的做法，也就是处理这种规模庞大的工业负荷。"',
+          '"并非建造足够的风能、太阳能和储能设施在技术上是不可能的，而是这些方面的问题。只要给工程师足够的资金，他们就能做很多事情。真正的问题在于，到底需要多少钱。"',
+          '"我认为就技术而言，这个机构历来都不擅长提出所有问题，然后带着所有答案去立法。"',
+          '"如果我们输给中国，在军备竞赛、人工智能和量子计算领域落后于中国，那么中国将成为真正的超级大强国，而不是一个超级大国。"'
+        ]
+      },
+      { 
+        text: '虚假解决方案', 
+        weight: 7.8,
+        color: '#ad8973',
+        textaid:'毫无根据的畅想，或者谈论一些细微、无法大范围落地的解决方案',
+        examples: [
+          '"不久之后，大部分新增电力将来自天然气燃气轮机和燃气发动机。这些设备正在快速建设中。"',
+          '"如果我们利用这些已关闭的碳氢化合物发电厂（包括天然气和煤炭发电厂）的能源，我们就能为一支核反应堆提供一百多年的燃料。想想看，中国正在建造燃煤电厂来为其人工智能发展提供动力，而我们却可以利用这些已关闭的碳氢化合物发电厂的能源，实现零排放，这岂不是很有意思吗？我真心认为，这应该是本届政府和国会的首要任务，尽快将这些小型模块化反应堆（SMR）投入使用，并安装在我们已经拥有涡轮机和输电线路的地方。"',
+          '"我们已经看到了一些混合能源计划，就像我刚才提到的路易斯安那州，那里正在将太阳能和燃气轮机结合起来。你会发现，通过充分利用燃气轮机以及风能和太阳能，可以减少燃气轮机的数量和天然气的消耗量。"',
+          '"未来你会越来越多地看到，那些既没有水冷难题也没有传输难题的数据中心被提及"'
+        ]
+      },
+      { 
+        text: '选择性披露', 
+        weight: 7.8,
+        color: '#95b0b6',
+        textaid:'单方面披露向好的数据',
+        examples: [
+          '"2017年至2023年间，数据中心行业对美国GDP的贡献总额高达3.5万亿美元"',
+          '"(2017-2023年间，数据中心行业让)美国直接雇佣了超过60万名员工，并带动了470万个就业岗位"',
+          '"该行业在2023年缴纳了1630亿美元的联邦、州和地方税收，为公共安全、交通、教育等重要的社区优先事项提供了持续的资金支持"',
+          '"根据劳伦斯伯克利国家实验室的研究，这样做已经使能源效率比分散的计算资源提高了约600%"',
+        ]
+      },
+      { 
+        text: '时间操纵', 
+        weight: 7.8,
+        color: '#00c5a1',
+        textaid:'显示出时间的紧迫性，和纵向考察上片面的乐观，回避当下的焦土问题',
+        examples: [
+          '"人工智能项目将在2030年前为全球经济带来19.9万亿美元的贡献。"',
+          '"尽管数据中心的能源消耗在增加，但自2010年以来，每次计算的能源消耗每年下降20%。"',
+          '"速度很重要，简而言之，中国人非常擅长在四年内建成新的核电站。"'
+        ]
+      },
+      { 
+        text: '虚假等价', 
+        weight: 7.5,
+        color: '#003c4e',
+        textaid:'强调AI能耗等同于其他事务，彰显其必要性，但并不提出建设性的措施',
+        examples: [
+          '"无论是智能恒温器、动态线路监控，还是消费者、企业和政府使用的各种技术，所有这些都依赖于数据中心提供的数字基础设施。"',
+          '"能否迅速调动能源供应至关重要，这是国家在国际竞争中保持领先地位的关键。"',
+          '"提高效率催生了数十亿部手机和数千个数据中心……这并非悖论，而是现实。"'
+        ]
+      },
+      { 
+        text: '责任转嫁', 
+        weight: 7.2,
+        color: '#00a8cf',
+        textaid:'强调其他主体的原因',
+        examples: [
+          '"三分之二的联邦环境影响评估报告耗时超过法定的两年期限，导致关键能源项目不必要地停滞不前。"',
+          '"中国的威胁使我们无法获得稀土元素和关键矿产，但我们也必须满足日益增长的电力需求。"',
+          '"去年夏天，弗吉尼亚州30%的数据中心突然离线，导致电力激增，险些造成大面积停电，FERC对此措手不及。显然，监管机构需要更多授权，而国会的监督可以在这方面发挥作用。" ',
+          '"我们需要更明智的贸易政策，将关税控制与国内供应链相结合。"',
+          '"预计未来五年，消费者和企业产生的数据量将是过去十年的两倍。"'
+        ]
+      },
+      { 
+        text: '数字包装', 
+        weight: 6.5,
+        color: '#76dff3',
+        textaid:'以宏大/抽象的数据回避具体的问题',
+        examples: [
+          '"服务器温度提升到 80°F"',
+          '"这项5000亿美元的投资将使美国及其全球战略伙伴能够开启下一代人工智能时代。"',
+          '"数据中心行业预计为当地经济贡献7.4万个就业岗位、55亿美元的劳动收入和91亿美元的GDP。"',
+          '"该行业在2023年缴纳了1630亿美元的联邦、州和地方税收。"'
+        ]
+      }
+    ];
+
+    const { useState, useRef, useEffect, useCallback } = React;
+
+    function RhetoricTacticsViz() {
+      const [selectedIndex, setSelectedIndex] = useState(0);
+      const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+      const scrollRef = useRef(null);
+      const isUserScrolling = useRef(false);
+      const scrollTimeout = useRef(null);
+
+      const ITEM_HEIGHT = 70;
+      const CONTAINER_HEIGHT = 500;
+      const PADDING_TOP = (CONTAINER_HEIGHT - ITEM_HEIGHT) / 2; // 215px
+
+      useEffect(() => {
+        const handleResize = () => {
+          setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, []);
+
+      // 滚动到指定索引
+      const scrollToIndex = useCallback((index, smooth = true) => {
+        if (scrollRef.current) {
+          const targetScroll = index * ITEM_HEIGHT;
+          scrollRef.current.scrollTo({
+            top: targetScroll,
+            behavior: smooth ? 'smooth' : 'auto'
+          });
+        }
+      }, []);
+
+      // 初始化滚动位置
+      useEffect(() => {
+        if (!isMobile) {
+          // 延迟执行确保DOM渲染完成
+          const timer = setTimeout(() => {
+            scrollToIndex(0, false);
+          }, 100);
+          return () => clearTimeout(timer);
+        }
+      }, [isMobile, scrollToIndex]);
+
+      // 处理滚动事件
+      const handleScroll = useCallback((e) => {
+        const scrollTop = e.target.scrollTop;
+        const index = Math.round(scrollTop / ITEM_HEIGHT);
+        const newIndex = Math.min(Math.max(0, index), categories.length - 1);
+        
+        setSelectedIndex(newIndex);
+        
+        // 清除之前的timeout
+        if (scrollTimeout.current) {
+          clearTimeout(scrollTimeout.current);
+        }
+        
+        // 滚动停止后自动对齐
+        scrollTimeout.current = setTimeout(() => {
+          scrollToIndex(newIndex, true);
+        }, 150);
+      }, [scrollToIndex]);
+
+      // 点击选择
+      const handleItemClick = (index) => {
+        setSelectedIndex(index);
+        scrollToIndex(index, true);
+      };
+
+      const selectedCategory = categories[selectedIndex];
+
+      // Mobile view
+      if (isMobile) {
+        return (
+          <div className="min-h-screen w-full bg-white p-4">
+            <div className="mb-6">
+              <select
+                value={selectedIndex}
+                onChange={(e) => setSelectedIndex(Number(e.target.value))}
+                className="w-full p-4 text-lg rounded-xl border-2 appearance-none cursor-pointer"
+                style={{
+                  borderColor: selectedCategory.color + '40',
+                  color: selectedCategory.color,
+                  backgroundColor: selectedCategory.color + '08'
+                }}
+              >
+                {categories.map((category, index) => (
+                  <option key={index} value={index}>
+                    {category.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div 
+              className="w-full rounded-2xl p-6 transition-all duration-300"
+              style={{ 
+                backgroundColor: selectedCategory.color + '08',
+                border: `1px solid ${selectedCategory.color}30`
+              }}
+            >
+              <div className="mb-6">
+                <h2 
+                  className="text-3xl font-light mb-3"
+                  style={{ color: selectedCategory.color }}
+                >
+                  {selectedCategory.text}
+                </h2>
+                <p className="text-gray-600 text-base leading-relaxed">
+                  {selectedCategory.textaid}
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-gray-400 text-xs uppercase tracking-wider mb-4 font-light">
+                  示例引用
+                </h3>
+                <div className="space-y-3">
+                  {selectedCategory.examples.map((example, idx) => (
+                    <div 
+                      key={idx}
+                      className="text-gray-700 text-sm leading-relaxed p-4 bg-white rounded-lg border"
+                      style={{
+                        borderColor: selectedCategory.color + '20'
+                      }}
+                    >
+                      {example}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Desktop view
+      return (
+        <div className="h-screen w-full bg-white flex items-center justify-center p-8">
+          <div className="flex gap-12 h-[600px] max-w-6xl w-full">
+            {/* Left Side - Scroll Picker */}
+            <div className="w-80 flex items-center justify-center">
+              <div className="relative w-full" style={{ height: `${CONTAINER_HEIGHT}px` }}>
+                <style>{`
+                  .scroll-container::-webkit-scrollbar {
+                    display: none;
+                  }
+                  .scroll-container {
+                    scrollbar-width: none;
+                    -ms-overflow-style: none;
+                  }
+                `}</style>
+                
+                {/* Gradient overlay */}
+                <div 
+                  className="absolute inset-0 pointer-events-none z-10 rounded-2xl"
+                  style={{
+                    background: 'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,1) 100%)'
+                  }}
+                />
+                
+                {/* Selection indicator - 固定在中间 */}
+                <div 
+                  className="absolute z-20 w-full pointer-events-none rounded-xl"
+                  style={{
+                    top: `${PADDING_TOP}px`,
+                    height: `${ITEM_HEIGHT}px`,
+                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0.07) 50%, rgba(0,0,0,0.03) 100%)',
+                    border: '1px solid rgba(0,0,0,0.1)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
+                  }}
+                />
+
+                {/* Scrollable list - 无scroll snap */}
+                <div 
+                  ref={scrollRef}
+                  onScroll={handleScroll}
+                  className="scroll-container h-full overflow-y-scroll"
+                >
+                  {/* 顶部padding - 让第一个项目可以居中 */}
+                  <div style={{ height: `${PADDING_TOP}px` }} />
+                  
+                  {categories.map((category, index) => (
+                    <div
+                      key={index}
+                      onClick={() => handleItemClick(index)}
+                      className="flex items-center justify-center transition-all duration-200 cursor-pointer"
+                      style={{
+                        height: `${ITEM_HEIGHT}px`,
+                        opacity: selectedIndex === index ? 1 : 0.25,
+                        transform: selectedIndex === index ? 'scale(1.05)' : 'scale(0.9)',
+                      }}
+                    >
+                      <div className="text-center">
+                        <div 
+                          className="text-3xl font-light transition-colors duration-200"
+                          style={{ 
+                            color: selectedIndex === index ? category.color : '#aaa'
+                          }}
+                        >
+                          {category.text}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* 底部padding - 让最后一个项目可以居中 */}
+                  <div style={{ height: `${PADDING_TOP}px` }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side - Details */}
+            <div className="flex-1 flex items-center">
+              <div 
+                className="w-full h-[500px] rounded-2xl p-10 flex flex-col transition-all duration-300"
+                style={{ 
+                  backgroundColor: selectedCategory.color + '08',
+                  border: `1px solid ${selectedCategory.color}30`
+                }}
+              >
+                <div className="mb-8">
+                  <h2 
+                    className="text-4xl font-light mb-3"
+                    style={{ color: selectedCategory.color }}
+                  >
+                    {selectedCategory.text}
+                  </h2>
+                  <p className="text-gray-600 text-lg leading-relaxed">
+                    {selectedCategory.textaid}
+                  </p>
+                </div>
+
+                <div className="flex-1 overflow-hidden">
+                  <h3 className="text-gray-400 text-sm uppercase tracking-wider mb-4 font-light">
+                    示例引用
+                  </h3>
+                  <div className="space-y-3 h-full overflow-y-auto pr-2">
+                    {selectedCategory.examples.map((example, idx) => (
+                      <div 
+                        key={idx}
+                        className="text-gray-700 text-sm leading-relaxed p-4 bg-white rounded-lg border transition-all duration-200"
+                        style={{
+                          borderColor: selectedCategory.color + '20'
+                        }}
+                      >
+                        {example}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<RhetoricTacticsViz />);
+  </script>
+</body>
+</html>
