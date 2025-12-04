@@ -21,19 +21,19 @@
     /* 跃动弹跳动画 */
     @keyframes bounce-jump {
       0%, 100% {
-        transform: translateY(0) rotate(0deg);
+        transform: translateY(0);
       }
       20% {
-        transform: translateY(-3px) rotate(-1deg);
+        transform: translateY(-3px);
       }
       40% {
-        transform: translateY(-2px) rotate(0.5deg);
+        transform: translateY(-2px);
       }
       60% {
-        transform: translateY(-5px) rotate(1deg);
+        transform: translateY(-5px);
       }
       80% {
-        transform: translateY(-1px) rotate(-0.5deg);
+        transform: translateY(-1px);
       }
     }
     
@@ -62,11 +62,11 @@
     
     /* 选择器跃动 */
     .selector-jump {
-      animation: bounce-jump 1.5s ease-in-out infinite, glow-pulse 1.5s ease-in-out infinite;
+      animation: bounce-jump 3s ease-in-out infinite, glow-pulse 3s ease-in-out infinite;
     }
     
     .arrow-jump {
-      animation: arrow-jump 0.8s ease-in-out infinite;
+      animation: arrow-jump 1.5s ease-in-out infinite;
     }
     
   
