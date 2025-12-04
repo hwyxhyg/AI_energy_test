@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 能耗漂绿策略词云</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    }
+
+    /* 容器占据大部分屏幕空间 */
+    #container {
+        width: 90vw;
+        height: 85vh;
+        background: white;
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .word {
+        position: absolute;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.2s, filter 0.2s;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.15);
+        user-select: none;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+    }
+
+    #panel {
+        position: fixed;
+        background: rgba(255,255,255,0.98);
+        backdrop-filter: blur(12px);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        max-width: min(1200px, 40vw);
+        min-width: 300px;
+        display: none;
+        border: 3px solid #888;
+        z-index: 99999;
+        pointer-events: none;
+    }
+
+    #panel h3 {
+        margin: 0 0 12px 0;
+        font-size: clamp(14px, 2vw, 60px);
+        font-weight: bold;
+        line-height: 1.4;
+    }
+
+    .example-box {
+        padding: 10px 12px;
+        background: #f3f4f6;
+        border-left: 4px solid;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        font-size: clamp(12px, 2vw, 40px);
+        line-height: 1.6;
+    }
+
+    .panel-title {
+        margin-bottom: 8px;
+        font-size: clamp(10px, 2vw, 40px);
+        letter-spacing: 0.08em;
+        color: #6b7280;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 768px) {
+        #container {
+            width: 95vw;
+            height: 90vh;
+        }
+
+        #panel {
+            max-width: 85vw;
+            min-width: 250px;
+            padding: 16px;
+        }
+    }
+
+    @media (max-height: 600px) {
+        #container {
+            height: 95vh;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div id="container"></div>
+<div id="panel"></div>
+
+<script>
+// ========== 1. AI 漂绿策略数据 ==========
+
+const categories = [
+  { 
+    text: '情感操纵', 
+    weight: 9.2, 
+    textaid:'煽动民族主义情绪，或者通过具体的人情案例进行说服',
+    color: '#822800',
+    examples: [
+      '"正如你所知，用于制造风力发电机和太阳能电池板的精炼关键矿物90%都在中国，而且是在中国燃煤电网中。所以，购买中国制造的技术是一笔棘手的交易。"',
+      '"我认为整个行业都会竭尽所能"',
+      '"您认为在人工智能军备竞赛中输给中国和气候变化，哪个对国家未来安全构成更大的威胁？"',
+      '"我今天早上看到一篇发表在《自然》杂志上的新论文，讲述了一位多年无法说话、全身瘫痪的女性，通过脑部扫描，能够通过意念说话，语速达到每分钟90个单词，比我说话的速度略慢，但差距不大。"',
+      '"为了国家安全和经济繁荣，我们必须在人工智能领域保持全球领先地位。"'
+    ]
+  },
+  { 
+    text: '转移焦点', 
+    weight: 8.8,
+    textaid :'谈论其他问题或者威胁',
+    color: '#9e5c9b',
+    examples: [
+      '"这是因为计算能效的提升使得计算成本更低、操作更便捷、速度更快，而这种提升在相当长的一段时间内将超越所有表面上的能效提升。"',
+      '"我认为解决方案之一是更多地利用一百年前公用事业行业的做法，也就是处理这种规模庞大的工业负荷。"',
+      '"并非建造足够的风能、太阳能和储能设施在技术上是不可能的，而是这些方面的问题。只要给工程师足够的资金，他们就能做很多事情。真正的问题在于，到底需要多少钱。"',
+      '"我认为就技术而言，这个机构历来都不擅长提出所有问题，然后带着所有答案去立法。"',
+      '"如果我们输给中国，在军备竞赛、人工智能和量子计算领域落后于中国，那么中国将成为真正的超级大强国，而不是一个超级大国。"'
+    ]
+  },
+  { 
+    text: '虚假解决方案', 
+    weight: 7.8,
+    color: '#ad8973',
+    textaid:'毫无根据的畅想，或者谈论一些细微、无法大范围落地的解决方案',
+    examples: [
+      '"不久之后，大部分新增电力将来自天然气燃气轮机和燃气发动机。这些设备正在快速建设中。"',
+      '"如果我们利用这些已关闭的碳氢化合物发电厂（包括天然气和煤炭发电厂）的能源，我们就能为一支核反应堆提供一百多年的燃料。想想看，中国正在建造燃煤电厂来为其人工智能发展提供动力，而我们却可以利用这些已关闭的碳氢化合物发电厂的能源，实现零排放，这岂不是很有意思吗？我真心认为，这应该是本届政府和国会的首要任务，尽快将这些小型模块化反应堆（SMR）投入使用，并安装在我们已经拥有涡轮机和输电线路的地方。"',
+      '"我们已经看到了一些混合能源计划，就像我刚才提到的路易斯安那州，那里正在将太阳能和燃气轮机结合起来。你会发现，通过充分利用燃气轮机以及风能和太阳能，可以减少燃气轮机的数量和天然气的消耗量。"',
+      '"未来你会越来越多地看到，那些既没有水冷难题也没有传输难题的数据中心被提及"'
+    ]
+  },
+  { 
+    text: '选择性披露', 
+    weight: 7.8,
+    color: '#95b0b6',
+    textaid:'单方面披露向好的数据',
+    examples: [
+      '"2017年至2023年间，数据中心行业对美国GDP的贡献总额高达3.5万亿美元"',
+      '"(2017-2023年间，数据中心行业让)美国直接雇佣了超过60万名员工，并带动了470万个就业岗位"',
+      '"该行业在2023年缴纳了1630亿美元的联邦、州和地方税收，为公共安全、交通、教育等重要的社区优先事项提供了持续的资金支持"',
+      '"根据劳伦斯伯克利国家实验室的研究，这样做已经使能源效率比分散的计算资源提高了约600%"',
+    ]
+  },
+  { 
+    text: '时间操纵', 
+    weight: 7.8,
+    color: '#00c5a1',
+    textaid:'显示出时间的紧迫性，和纵向考察上片面的乐观，回避当下的焦土问题',
+    examples: [
+      '"人工智能项目将在2030年前为全球经济带来19.9万亿美元的贡献。"',
+      '"尽管数据中心的能源消耗在增加，但自2010年以来，每次计算的能源消耗每年下降20%。"',
+      '"速度很重要，简而言之，中国人非常擅长在四年内建成新的核电站。"'
+    ]
+  },
+  { 
+    text: '虚假等价', 
+    weight: 7.5,
+    color: '#003c4e',
+    textaid:'强调AI能耗等同于其他事务，彰显其必要性，但并不提出建设性的措施',
+    examples: [
+      '"无论是智能恒温器、动态线路监控，还是消费者、企业和政府使用的各种技术，所有这些都依赖于数据中心提供的数字基础设施。"',
+      '"能否迅速调动能源供应至关重要，这是国家在国际竞争中保持领先地位的关键。"',
+      '"提高效率催生了数十亿部手机和数千个数据中心……这并非悖论，而是现实。"'
+    ]
+  },
+  { 
+    text: '责任转嫁', 
+    weight: 7.2,
+    color: '#00a8cf',
+    textaid:'强调其他主体的原因',
+    examples: [
+      '"三分之二的联邦环境影响评估报告耗时超过法定的两年期限，导致关键能源项目不必要地停滞不前。"',
+      '"中国的威胁使我们无法获得稀土元素和关键矿产，但我们也必须满足日益增长的电力需求。"',
+      '"去年夏天，弗吉尼亚州30%的数据中心突然离线，导致电力激增，险些造成大面积停电，FERC对此措手不及。显然，监管机构需要更多授权，而国会的监督可以在这方面发挥作用。" ',
+      '"我们需要更明智的贸易政策，将关税控制与国内供应链相结合。"',
+      '"预计未来五年，消费者和企业产生的数据量将是过去十年的两倍。"'
+    ]
+  },
+  { 
+    text: '数字包装', 
+    weight: 6.5,
+    color: '#76dff3',
+    textaid:'以宏大/抽象的数据回避具体的问题',
+    examples: [
+      '"服务器温度提升到 80°F"',
+      '"这项5000亿美元的投资将使美国及其全球战略伙伴能够开启下一代人工智能时代。"',
+      '"数据中心行业预计将为当地经济贡献7.4万个就业岗位、55亿美元的劳动收入和91亿美元的GDP。"',
+      '"该行业在2023年缴纳了1630亿美元的联邦、州和地方税收。"'
+    ]
+  }
+];
+
+// ========== 2. 初始化和布局函数 ==========
+
+const container = document.getElementById("container");
+const panel = document.getElementById("panel");
+let wordData = [];
+
+function initWordCloud() {
+  // 清空容器
+  container.innerHTML = '';
+  wordData = [];
+
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  // 根据权重计算字号（自适应）
+  function fontSize(weight) {
+    const base = Math.min(width, height);
+    const scale = 0.08; // 可调节 0.06~0.12
+    const maxWeight = Math.max(...categories.map(c => c.weight));
+    return base * scale * (weight / maxWeight);
+  }
+
+  // 预定义 8 个相对位置
+  const gridPositions = [
+    { x: width * 0.50, y: height * 0.40 }, // 中上
+    { x: width * 0.22, y: height * 0.25 }, // 左上
+    { x: width * 0.78, y: height * 0.25 }, // 右上
+    { x: width * 0.15, y: height * 0.55 }, // 左中
+    { x: width * 0.85, y: height * 0.55 }, // 右中
+    { x: width * 0.28, y: height * 0.80 }, // 左下
+    { x: width * 0.72, y: height * 0.80 }, // 右下
+    { x: width * 0.50, y: height * 0.68 }  // 中下
+  ];
+
+  // 按权重排序
+  const sorted = [...categories].sort((a, b) => b.weight - a.weight);
+
+  sorted.forEach((cat, i) => {
+    const pos = gridPositions[i] || gridPositions[gridPositions.length - 1];
+    const size = fontSize(cat.weight);
+
+    const div = document.createElement("div");
+    div.className = "word";
+    div.textContent = cat.text;
+    div.style.left = pos.x + "px";
+    div.style.top = pos.y + "px";
+    div.style.fontSize = size + "px";
+    div.style.color = cat.color;
+
+    container.appendChild(div);
+
+    wordData.push({
+      element: div,
+      category: cat,
+      x: pos.x,
+      y: pos.y,
+      fontSize: size
+    });
+
+    // 添加事件监听
+    div.addEventListener("mousemove", e => {
+      showPanel(cat, e.pageX, e.pageY);
+      highlight(cat.text);
+    });
+
+    div.addEventListener("mouseleave", () => {
+      hidePanel();
+      resetOpacity();
+    });
+  });
+}
+
+// ========== 3. Panel 显示逻辑 ==========
+
+function showPanel(cat, x, y) {
+  // 确保 panel 不超出屏幕
+  const panelWidth = 500;
+  const panelHeight = 400;
+  
+  let left = x + 20;
+  let top = y + 20;
+  
+  if (left + panelWidth > window.innerWidth) {
+    left = x - panelWidth - 20;
+  }
+  
+  if (top + panelHeight > window.innerHeight) {
+    top = window.innerHeight - panelHeight - 20;
+  }
+  
+  panel.style.left = Math.max(10, left) + "px";
+  panel.style.top = Math.max(10, top) + "px";
+  panel.style.display = "block";
+  panel.style.borderColor = cat.color;
+
+  panel.innerHTML = `
+    <h3 style="color:${cat.color}">${cat.textaid}</h3>
+    <div class="panel-title">听证会原话示例</div>
+    ${cat.examples.map(ex => `
+      <div class="example-box" style="border-left-color:${cat.color}">
+        ${ex}
+      </div>
+    `).join("")}
+  `;
+}
+
+function hidePanel() {
+  panel.style.display = "none";
+}
+
+function highlight(selectedText) {
+  wordData.forEach(w => {
+    if (w.category.text !== selectedText) {
+      w.element.style.opacity = 0.25;
+      w.element.style.filter = "none";
+    } else {
+      w.element.style.opacity = 1;
+      w.element.style.filter = "brightness(1.2)";
+    }
+  });
+}
+
+function resetOpacity() {
+  wordData.forEach(w => {
+    w.element.style.opacity = 1;
+    w.element.style.filter = "none";
+  });
+}
+
+// ========== 4. 响应式处理 ==========
+
+// 初始化
+initWordCloud();
+
+// 窗口大小改变时重新布局（防抖）
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    initWordCloud();
+  }, 250);
+});
+
+// 防止触摸设备上的双击缩放
+document.addEventListener('touchstart', (e) => {
+  if (e.touches.length > 1) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+let lastTouchEnd = 0;
+document.addEventListener('touchend', (e) => {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) {
+    e.preventDefault();
+  }
+  lastTouchEnd = now;
+}, false);
+
+</script>
+
+</body>
+</html>
