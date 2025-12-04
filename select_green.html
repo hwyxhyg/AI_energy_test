@@ -17,6 +17,95 @@
                    "PingFang SC", sans-serif;
       background: #f5f5f5;
     }
+    
+    /* 跃动弹跳动画 */
+    @keyframes bounce-jump {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      20% {
+        transform: translateY(-3px) rotate(-1deg);
+      }
+      40% {
+        transform: translateY(-2px) rotate(0.5deg);
+      }
+      60% {
+        transform: translateY(-5px) rotate(1deg);
+      }
+      80% {
+        transform: translateY(-1px) rotate(-0.5deg);
+      }
+    }
+    
+    
+    }
+    
+    /* 光晕脉冲 */
+    @keyframes glow-pulse {
+      0%, 100% {
+        box-shadow: 0 4px 15px rgba(var(--glow-color), 0.3);
+      }
+      50% {
+        box-shadow: 0 8px 30px rgba(var(--glow-color), 0.5);
+      }
+    }
+    
+    /* 箭头弹跳 */
+    @keyframes arrow-jump {
+      0%, 100% {
+        transform: translateY(-50%);
+      }
+      50% {
+        transform: translateY(calc(-50% + 6px));
+      }
+    }
+    
+    /* 选择器跃动 */
+    .selector-jump {
+      animation: bounce-jump 1.5s ease-in-out infinite, glow-pulse 1.5s ease-in-out infinite;
+    }
+    
+    .arrow-jump {
+      animation: arrow-jump 0.8s ease-in-out infinite;
+    }
+    
+  
+    .ripple-ring {
+      position: absolute;
+      inset: -4px;
+      border-radius: 16px;
+      border: 2px solid var(--ripple-color);
+      animation: ripple 1.5s ease-out infinite;
+      pointer-events: none;
+    }
+    
+    .ripple-ring:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+    
+    .ripple-ring:nth-child(3) {
+      animation-delay: 1s;
+    }
+    
+    /* 选择器主体样式 */
+    .selector-box {
+      border-radius: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    /* 停止动画 */
+    .no-animate .selector-jump {
+      animation: none;
+      transform: none;
+    }
+    
+    .no-animate .ripple-ring {
+      display: none;
+    }
+    
+    .no-animate .arrow-jump {
+      animation: none;
+    }
   </style>
 </head>
 <body>
@@ -125,16 +214,25 @@
 
     const { useState, useRef, useEffect, useCallback } = React;
 
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : { r: 0, g: 0, b: 0 };
+    }
+
     function RhetoricTacticsViz() {
       const [selectedIndex, setSelectedIndex] = useState(0);
       const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+      const [hasInteracted, setHasInteracted] = useState(false);
       const scrollRef = useRef(null);
-      const isUserScrolling = useRef(false);
       const scrollTimeout = useRef(null);
 
       const ITEM_HEIGHT = 70;
       const CONTAINER_HEIGHT = 500;
-      const PADDING_TOP = (CONTAINER_HEIGHT - ITEM_HEIGHT) / 2; // 215px
+      const PADDING_TOP = (CONTAINER_HEIGHT - ITEM_HEIGHT) / 2;
 
       useEffect(() => {
         const handleResize = () => {
@@ -144,7 +242,6 @@
         return () => window.removeEventListener('resize', handleResize);
       }, []);
 
-      // 滚动到指定索引
       const scrollToIndex = useCallback((index, smooth = true) => {
         if (scrollRef.current) {
           const targetScroll = index * ITEM_HEIGHT;
@@ -155,10 +252,8 @@
         }
       }, []);
 
-      // 初始化滚动位置
       useEffect(() => {
         if (!isMobile) {
-          // 延迟执行确保DOM渲染完成
           const timer = setTimeout(() => {
             scrollToIndex(0, false);
           }, 100);
@@ -166,7 +261,6 @@
         }
       }, [isMobile, scrollToIndex]);
 
-      // 处理滚动事件
       const handleScroll = useCallback((e) => {
         const scrollTop = e.target.scrollTop;
         const index = Math.round(scrollTop / ITEM_HEIGHT);
@@ -174,48 +268,88 @@
         
         setSelectedIndex(newIndex);
         
-        // 清除之前的timeout
         if (scrollTimeout.current) {
           clearTimeout(scrollTimeout.current);
         }
         
-        // 滚动停止后自动对齐
         scrollTimeout.current = setTimeout(() => {
           scrollToIndex(newIndex, true);
         }, 150);
       }, [scrollToIndex]);
 
-      // 点击选择
       const handleItemClick = (index) => {
         setSelectedIndex(index);
         scrollToIndex(index, true);
       };
 
+      const handleSelectChange = (e) => {
+        setSelectedIndex(Number(e.target.value));
+        setHasInteracted(true);
+      };
+
       const selectedCategory = categories[selectedIndex];
+      const rgb = hexToRgb(selectedCategory.color);
 
       // Mobile view
       if (isMobile) {
         return (
-          <div className="min-h-screen w-full bg-white p-4">
-            <div className="mb-6">
-              <select
-                value={selectedIndex}
-                onChange={(e) => setSelectedIndex(Number(e.target.value))}
-                className="w-full p-4 text-lg rounded-xl border-2 appearance-none cursor-pointer"
-                style={{
-                  borderColor: selectedCategory.color + '40',
-                  color: selectedCategory.color,
-                  backgroundColor: selectedCategory.color + '08'
-                }}
+          <div className="min-h-screen w-full bg-white p-4 pt-8">
+            {/* 选择器区域 - 跃动动画 */}
+            <div className={`mb-6 ${hasInteracted ? 'no-animate' : ''}`}>
+              <div 
+                className="ripple-container"
+                style={{ '--ripple-color': selectedCategory.color + '60' }}
               >
-                {categories.map((category, index) => (
-                  <option key={index} value={index}>
-                    {category.text}
-                  </option>
-                ))}
-              </select>
+                
+                {/* 主选择器 */}
+                <div 
+                  className={`selector-box relative ${!hasInteracted ? 'selector-jump' : ''}`}
+                  style={{
+                    '--glow-color': `${rgb.r}, ${rgb.g}, ${rgb.b}`,
+                    border: `3px solid ${selectedCategory.color}`,
+                    backgroundColor: selectedCategory.color + '10'
+                  }}
+                >
+                  <select
+                    value={selectedIndex}
+                    onChange={handleSelectChange}
+                    className="w-full p-4 text-lg rounded-xl appearance-none cursor-pointer pr-12 font-bold bg-transparent"
+                    style={{ color: selectedCategory.color }}
+                  >
+                    {categories.map((category, index) => (
+                      <option key={index} value={index}>
+                        {category.text}
+                      </option>
+                    ))}
+                  </select>
+                  
+                  {/* 下拉箭头 */}
+                  <div 
+                    className={`absolute right-4 top-1/2 pointer-events-none ${!hasInteracted ? 'arrow-jump' : ''}`}
+                    style={{ 
+                      color: selectedCategory.color,
+                      transform: 'translateY(-50%)'
+                    }}
+                  >
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              
+              {/* 提示文字 */}
+              {!hasInteracted && (
+                <p 
+                  className="text-center text-base mt-4 font-bold animate-pulse"
+                  style={{ color: selectedCategory.color }}
+                >
+                  👆 点我切换策略
+                </p>
+              )}
             </div>
 
+            {/* 详情区域 */}
             <div 
               className="w-full rounded-2xl p-6 transition-all duration-300"
               style={{ 
@@ -223,14 +357,11 @@
                 border: `1px solid ${selectedCategory.color}30`
               }}
             >
-              <div className="mb-6">
-                <h2 
-                  className="text-3xl font-light mb-3"
+              <div className="mb-5">
+                <p 
+                  className="text-base leading-relaxed font-medium"
                   style={{ color: selectedCategory.color }}
                 >
-                  {selectedCategory.text}
-                </h2>
-                <p className="text-gray-600 text-base leading-relaxed">
                   {selectedCategory.textaid}
                 </p>
               </div>
@@ -275,7 +406,6 @@
                   }
                 `}</style>
                 
-                {/* Gradient overlay */}
                 <div 
                   className="absolute inset-0 pointer-events-none z-10 rounded-2xl"
                   style={{
@@ -283,7 +413,6 @@
                   }}
                 />
                 
-                {/* Selection indicator - 固定在中间 */}
                 <div 
                   className="absolute z-20 w-full pointer-events-none rounded-xl"
                   style={{
@@ -295,13 +424,11 @@
                   }}
                 />
 
-                {/* Scrollable list - 无scroll snap */}
                 <div 
                   ref={scrollRef}
                   onScroll={handleScroll}
                   className="scroll-container h-full overflow-y-scroll"
                 >
-                  {/* 顶部padding - 让第一个项目可以居中 */}
                   <div style={{ height: `${PADDING_TOP}px` }} />
                   
                   {categories.map((category, index) => (
@@ -328,7 +455,6 @@
                     </div>
                   ))}
                   
-                  {/* 底部padding - 让最后一个项目可以居中 */}
                   <div style={{ height: `${PADDING_TOP}px` }} />
                 </div>
               </div>
@@ -344,13 +470,10 @@
                 }}
               >
                 <div className="mb-8">
-                  <h2 
-                    className="text-4xl font-light mb-3"
+                  <p 
+                    className="text-xl leading-relaxed"
                     style={{ color: selectedCategory.color }}
                   >
-                    {selectedCategory.text}
-                  </h2>
-                  <p className="text-gray-600 text-lg leading-relaxed">
                     {selectedCategory.textaid}
                   </p>
                 </div>
