@@ -55,7 +55,7 @@
         border-radius: 12px;
         padding: 20px;
         box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-        max-width: min(1200px, 60vw);
+        max-width: min(500px, 40vw);
         min-width: 300px;
         display: none;
         border: 3px solid #888;
@@ -76,13 +76,13 @@
         border-left: 4px solid;
         margin-bottom: 12px;
         border-radius: 6px;
-        font-size: clamp(12px, 1.2vw, 16px);
+        font-size: clamp(12px, 1vw, 15px);
         line-height: 1.6;
     }
 
     .panel-title {
         margin-bottom: 8px;
-        font-size: clamp(10px, 1.2vw, 16px);
+        font-size: clamp(10px, 0.9vw, 13px);
         letter-spacing: 0.08em;
         color: #6b7280;
         text-transform: uppercase;
@@ -314,8 +314,8 @@ function showPanel(cat, x, y) {
   panel.style.borderColor = cat.color;
 
   panel.innerHTML = `
-    <h3 style="color:${cat.color}">${cat.textaid}</h3>
     <div class="panel-title">听证会原话示例</div>
+    <h3 style="color:${cat.color}">${cat.textaid}</h3>
     ${cat.examples.map(ex => `
       <div class="example-box" style="border-left-color:${cat.color}">
         ${ex}
