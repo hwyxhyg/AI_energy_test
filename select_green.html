@@ -18,48 +18,24 @@
       background: transparent;
     }
     
-    /* 跃动弹跳动画 */
     @keyframes bounce-jump {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      20% {
-        transform: translateY(-3px);
-      }
-      40% {
-        transform: translateY(-2px);
-      }
-      60% {
-        transform: translateY(-5px);
-      }
-      80% {
-        transform: translateY(-1px);
-      }
+      0%, 100% { transform: translateY(0); }
+      20% { transform: translateY(-3px); }
+      40% { transform: translateY(-2px); }
+      60% { transform: translateY(-5px); }
+      80% { transform: translateY(-1px); }
     }
     
-  
-    
-    /* 光晕脉冲 */
     @keyframes glow-pulse {
-      0%, 100% {
-        box-shadow: 0 4px 15px rgba(var(--glow-color), 0.3);
-      }
-      50% {
-        box-shadow: 0 8px 30px rgba(var(--glow-color), 0.5);
-      }
+      0%, 100% { box-shadow: 0 4px 15px rgba(var(--glow-color), 0.3); }
+      50% { box-shadow: 0 8px 30px rgba(var(--glow-color), 0.5); }
     }
     
-    /* 箭头弹跳 */
     @keyframes arrow-jump {
-      0%, 100% {
-        transform: translateY(-50%);
-      }
-      50% {
-        transform: translateY(calc(-50% + 6px));
-      }
+      0%, 100% { transform: translateY(-50%); }
+      50% { transform: translateY(calc(-50% + 6px)); }
     }
     
-    /* 选择器跃动 */
     .selector-jump {
       animation: bounce-jump 3s ease-in-out infinite, glow-pulse 3s ease-in-out infinite;
     }
@@ -68,42 +44,26 @@
       animation: arrow-jump 1.5s ease-in-out infinite;
     }
     
-  
-    .ripple-ring {
-      position: absolute;
-      inset: -4px;
-      border-radius: 16px;
-      border: 2px solid var(--ripple-color);
-      animation: ripple 1.5s ease-out infinite;
-      pointer-events: none;
-    }
-    
-    .ripple-ring:nth-child(2) {
-      animation-delay: 0.5s;
-    }
-    
-    .ripple-ring:nth-child(3) {
-      animation-delay: 1s;
-    }
-    
-    /* 选择器主体样式 */
     .selector-box {
       border-radius: 14px;
       transition: all 0.3s ease;
     }
     
-    /* 停止动画 */
-    .no-animate .selector-jump {
-      animation: none;
-      transform: none;
-    }
+    .no-animate .selector-jump { animation: none; transform: none; }
+    .no-animate .arrow-jump { animation: none; }
     
-    .no-animate .ripple-ring {
-      display: none;
+    .custom-scroll::-webkit-scrollbar {
+      width: 3px;
     }
-    
-    .no-animate .arrow-jump {
-      animation: none;
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(145, 158, 168, 0.3);
+      border-radius: 2px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(145, 158, 168, 0.5);
     }
   </style>
 </head>
@@ -116,7 +76,7 @@
         text: '情感操纵', 
         weight: 9.2, 
         textaid:'煽动民族主义情绪，或者通过具体的人情案例进行说服',
-        color: '#666F76',
+        color: '#484f57',
         examples: [
           '"正如你所知，用于制造风力发电机和太阳能电池板的精炼关键矿物90%都在中国，而且是在中国燃煤电网中。所以，购买中国制造的技术是一笔棘手的交易。"',
           '"我认为整个行业都会竭尽所能"',
@@ -129,7 +89,7 @@
         text: '转移焦点', 
         weight: 8.8,
         textaid :'谈论其他问题或者威胁',
-        color: '#666F76',
+        color: '#484f57',
         examples: [
           '"这是因为计算能效的提升使得计算成本更低、操作更便捷、速度更快，而这种提升在相当长的一段时间内将超越所有表面上的能效提升。"',
           '"我认为解决方案之一是更多地利用一百年前公用事业行业的做法，也就是处理这种规模庞大的工业负荷。"',
@@ -141,7 +101,7 @@
       { 
         text: '虚假解决方案', 
         weight: 7.8,
-        color: '#666F76',
+        color: '#484f57',
         textaid:'无根据的畅想，或者谈论一些细微、无法大范围落地的解决方案',
         examples: [
           '"不久之后，大部分新增电力将来自天然气燃气轮机和燃气发动机。这些设备正在快速建设中。"',
@@ -153,7 +113,7 @@
       { 
         text: '选择性披露', 
         weight: 7.8,
-        color: '#666F76',
+        color: '#484f57',
         textaid:'单方面披露向好的数据',
         examples: [
           '"2017年至2023年间，数据中心行业对美国GDP的贡献总额高达3.5万亿美元"',
@@ -165,7 +125,7 @@
       { 
         text: '时间操纵', 
         weight: 7.8,
-        color: '#666F76',
+        color: '#484f57',
         textaid:'显示出时间的紧迫性，和纵向考察上片面的乐观，回避当下的焦土问题',
         examples: [
           '"人工智能项目将在2030年前为全球经济带来19.9万亿美元的贡献。"',
@@ -176,7 +136,7 @@
       { 
         text: '虚假等价', 
         weight: 7.5,
-        color: '#666F76',
+        color: '#484f57',
         textaid:'强调AI能耗等同于其他事务，彰显其必要性，但并不提出建设性的措施',
         examples: [
           '"无论是智能恒温器、动态线路监控，还是消费者、企业和政府使用的各种技术，所有这些都依赖于数据中心提供的数字基础设施。"',
@@ -187,7 +147,7 @@
       { 
         text: '责任转嫁', 
         weight: 7.2,
-        color: '#666F76',
+        color: '#484f57',
         textaid:'强调其他主体的原因',
         examples: [
           '"三分之二的联邦环境影响评估报告耗时超过法定的两年期限，导致关键能源项目不必要地停滞不前。"',
@@ -200,7 +160,7 @@
       { 
         text: '数字包装', 
         weight: 6.5,
-        color: '#666F76',
+        color: '#484f57',
         textaid:'以宏大/抽象的数据回避具体的问题',
         examples: [
           '"服务器温度提升到 80°F"',
@@ -229,8 +189,8 @@
       const scrollRef = useRef(null);
       const scrollTimeout = useRef(null);
 
-      const ITEM_HEIGHT = 70;
-      const CONTAINER_HEIGHT = 500;
+      const ITEM_HEIGHT = 48;
+      const CONTAINER_HEIGHT = 360;
       const PADDING_TOP = (CONTAINER_HEIGHT - ITEM_HEIGHT) / 2;
 
       useEffect(() => {
@@ -293,14 +253,11 @@
       if (isMobile) {
         return (
           <div className="min-h-screen w-full bg-white p-4 pt-8">
-            {/* 选择器区域 - 跃动动画 */}
             <div className={`mb-6 ${hasInteracted ? 'no-animate' : ''}`}>
               <div 
                 className="ripple-container"
                 style={{ '--ripple-color': selectedCategory.color + '60' }}
               >
-                
-                {/* 主选择器 */}
                 <div 
                   className={`selector-box relative ${!hasInteracted ? 'selector-jump' : ''}`}
                   style={{
@@ -322,7 +279,6 @@
                     ))}
                   </select>
                   
-                  {/* 下拉箭头 */}
                   <div 
                     className={`absolute right-4 top-1/2 pointer-events-none ${!hasInteracted ? 'arrow-jump' : ''}`}
                     style={{ 
@@ -337,7 +293,6 @@
                 </div>
               </div>
               
-              {/* 提示文字 */}
               {!hasInteracted && (
                 <p 
                   className="text-center text-base mt-4 font-bold animate-pulse"
@@ -348,7 +303,6 @@
               )}
             </div>
 
-            {/* 详情区域 */}
             <div 
               className="w-full rounded-2xl p-6 transition-all duration-300"
               style={{ 
@@ -366,7 +320,7 @@
               </div>
 
               <div>
-                <h3 className="text-gray-400 text-xs uppercase tracking-wider mb-4 font-light">
+                <h3 className="text-xs uppercase tracking-wider mb-4 font-light" style={{ color: '#919EA8' }}>
                   示例引用
                 </h3>
                 <div className="space-y-3">
@@ -375,7 +329,7 @@
                       key={idx}
                       className="text-sm leading-relaxed p-4 bg-white rounded-lg border"
                       style={{
-                        color: '#A9ABA8',
+                        color: '#919EA8',
                         borderColor: selectedCategory.color + '20'
                       }}
                     >
@@ -389,38 +343,33 @@
         );
       }
 
-      // Desktop view
+      // Desktop view - 紧凑单屏布局，单列引用
       return (
-        <div className="h-screen w-full bg-white flex items-center justify-center p-8">
-          <div className="flex gap-12 h-[600px] max-w-6xl w-full">
+        <div className="h-screen w-full bg-white flex items-center justify-center px-8 py-4">
+          <div className="flex gap-10 max-w-5xl w-full">
             {/* Left Side - Scroll Picker */}
-            <div className="w-80 flex items-center justify-center">
+            <div className="w-48 flex items-center justify-center flex-shrink-0">
               <div className="relative w-full" style={{ height: `${CONTAINER_HEIGHT}px` }}>
                 <style>{`
-                  .scroll-container::-webkit-scrollbar {
-                    display: none;
-                  }
-                  .scroll-container {
-                    scrollbar-width: none;
-                    -ms-overflow-style: none;
-                  }
+                  .scroll-container::-webkit-scrollbar { display: none; }
+                  .scroll-container { scrollbar-width: none; -ms-overflow-style: none; }
                 `}</style>
                 
                 <div 
-                  className="absolute inset-0 pointer-events-none z-10 rounded-2xl"
+                  className="absolute inset-0 pointer-events-none z-10"
                   style={{
-                    background: 'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,1) 100%)'
+                    background: 'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0) 80%, rgba(255,255,255,1) 100%)'
                   }}
                 />
                 
                 <div 
-                  className="absolute z-20 w-full pointer-events-none rounded-xl"
+                  className="absolute z-20 w-full pointer-events-none rounded-lg"
                   style={{
                     top: `${PADDING_TOP}px`,
                     height: `${ITEM_HEIGHT}px`,
-                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0.07) 50%, rgba(0,0,0,0.03) 100%)',
-                    border: '1px solid rgba(0,0,0,0.1)',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
+                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.04) 50%, rgba(0,0,0,0.04) 50%, rgba(0,0,0,0.02) 100%)',
+                    border: '1px solid rgba(0,0,0,0.06)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
                   }}
                 />
 
@@ -438,15 +387,15 @@
                       className="flex items-center justify-center transition-all duration-200 cursor-pointer"
                       style={{
                         height: `${ITEM_HEIGHT}px`,
-                        opacity: selectedIndex === index ? 1 : 0.25,
-                        transform: selectedIndex === index ? 'scale(1.05)' : 'scale(0.9)',
+                        opacity: selectedIndex === index ? 1 : 0.2,
+                        transform: selectedIndex === index ? 'scale(1.08)' : 'scale(0.88)',
                       }}
                     >
                       <div className="text-center">
                         <div 
-                          className="text-3xl font-light transition-colors duration-200"
+                          className="text-lg font-normal transition-colors duration-200"
                           style={{ 
-                            color: selectedIndex === index ? category.color : '#aaa'
+                            color: selectedIndex === index ? category.color : '#bbb'
                           }}
                         >
                           {category.text}
@@ -460,50 +409,49 @@
               </div>
             </div>
 
-            
             {/* Right Side - Details */}
-            <div className="flex-1 flex items-center">
+            <div className="flex-1 flex items-center min-w-0">
               <div 
-                className="w-full h-[500px] rounded-2xl p-10 flex flex-col transition-all duration-300"
+                className="w-full h-full rounded-xl p-5 flex flex-col transition-all duration-300"
                 style={{ 
-                  backgroundColor: '#FFFFFF',
-                  border: `1px solid ${selectedCategory.color}30`
+                  backgroundColor: '#FAFAFA',
+                  border: `1px solid ${selectedCategory.color}15`
                 }}
               >
-                <div className="mb-8 flex-shrink-0">
+                {/* 策略说明 */}
+                <div className="mb-3 flex-shrink-0 pb-3" style={{ borderBottom: `1px solid ${selectedCategory.color}10` }}>
                   <p 
-                    className="text-xl leading-relaxed"
+                    className="text-sm leading-relaxed"
                     style={{ color: selectedCategory.color }}
                   >
                     {selectedCategory.textaid}
                   </p>
                 </div>
 
+                {/* 示例引用 */}
                 <div className="flex-1 flex flex-col min-h-0">
-                  <h3 className="text-gray-400 text-sm uppercase tracking-wider mb-4 font-light flex-shrink-0">
+                  <h3 className="text-xs uppercase tracking-wider mb-2 font-light flex-shrink-0" style={{ color: '#919EA8' }}>
                     示例引用
                   </h3>
-                  <div className="space-y-3 flex-1 overflow-y-auto pr-2" style={{
-                    scrollbarWidth: 'thin',
-                    scrollbarColor: `${selectedCategory.color}40 transparent`
-                  }}>
-                    {selectedCategory.examples.map((example, idx) => (
-                      <div 
-                        key={idx}
-                        className="text-sm leading-relaxed p-4 bg-white rounded-lg border transition-all duration-200"
-                        style={{
-                          color: '#A9ABA8',
-                          borderColor: selectedCategory.color + '20'
-                        }}
-                      >
-                        {example}
-                      </div>
-                    ))}
+                  <div className="flex-1 overflow-y-auto custom-scroll pr-1">
+                    <div className="space-y-1.5">
+                      {selectedCategory.examples.map((example, idx) => (
+                        <div 
+                          key={idx}
+                          className="text-xs leading-relaxed py-2 px-3 bg-white rounded border transition-all duration-200"
+                          style={{
+                            color: '#919EA8',
+                            borderColor: 'rgba(145, 158, 168, 0.15)'
+                          }}
+                        >
+                          {example}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       );
