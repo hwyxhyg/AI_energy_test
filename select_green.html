@@ -37,8 +37,7 @@
       }
     }
     
-    
-    }
+  
     
     /* 光晕脉冲 */
     @keyframes glow-pulse {
@@ -117,7 +116,7 @@
         text: '情感操纵', 
         weight: 9.2, 
         textaid:'煽动民族主义情绪，或者通过具体的人情案例进行说服',
-        color: '#822800',
+        color: '#666F76',
         examples: [
           '"正如你所知，用于制造风力发电机和太阳能电池板的精炼关键矿物90%都在中国，而且是在中国燃煤电网中。所以，购买中国制造的技术是一笔棘手的交易。"',
           '"我认为整个行业都会竭尽所能"',
@@ -130,7 +129,7 @@
         text: '转移焦点', 
         weight: 8.8,
         textaid :'谈论其他问题或者威胁',
-        color: '#9e5c9b',
+        color: '#666F76',
         examples: [
           '"这是因为计算能效的提升使得计算成本更低、操作更便捷、速度更快，而这种提升在相当长的一段时间内将超越所有表面上的能效提升。"',
           '"我认为解决方案之一是更多地利用一百年前公用事业行业的做法，也就是处理这种规模庞大的工业负荷。"',
@@ -142,7 +141,7 @@
       { 
         text: '虚假解决方案', 
         weight: 7.8,
-        color: '#ad8973',
+        color: '#666F76',
         textaid:'无根据的畅想，或者谈论一些细微、无法大范围落地的解决方案',
         examples: [
           '"不久之后，大部分新增电力将来自天然气燃气轮机和燃气发动机。这些设备正在快速建设中。"',
@@ -154,7 +153,7 @@
       { 
         text: '选择性披露', 
         weight: 7.8,
-        color: '#95b0b6',
+        color: '#666F76',
         textaid:'单方面披露向好的数据',
         examples: [
           '"2017年至2023年间，数据中心行业对美国GDP的贡献总额高达3.5万亿美元"',
@@ -166,7 +165,7 @@
       { 
         text: '时间操纵', 
         weight: 7.8,
-        color: '#00c5a1',
+        color: '#666F76',
         textaid:'显示出时间的紧迫性，和纵向考察上片面的乐观，回避当下的焦土问题',
         examples: [
           '"人工智能项目将在2030年前为全球经济带来19.9万亿美元的贡献。"',
@@ -177,7 +176,7 @@
       { 
         text: '虚假等价', 
         weight: 7.5,
-        color: '#003c4e',
+        color: '#666F76',
         textaid:'强调AI能耗等同于其他事务，彰显其必要性，但并不提出建设性的措施',
         examples: [
           '"无论是智能恒温器、动态线路监控，还是消费者、企业和政府使用的各种技术，所有这些都依赖于数据中心提供的数字基础设施。"',
@@ -188,7 +187,7 @@
       { 
         text: '责任转嫁', 
         weight: 7.2,
-        color: '#00a8cf',
+        color: '#666F76',
         textaid:'强调其他主体的原因',
         examples: [
           '"三分之二的联邦环境影响评估报告耗时超过法定的两年期限，导致关键能源项目不必要地停滞不前。"',
@@ -201,7 +200,7 @@
       { 
         text: '数字包装', 
         weight: 6.5,
-        color: '#76dff3',
+        color: '#666F76',
         textaid:'以宏大/抽象的数据回避具体的问题',
         examples: [
           '"服务器温度提升到 80°F"',
@@ -353,7 +352,7 @@
             <div 
               className="w-full rounded-2xl p-6 transition-all duration-300"
               style={{ 
-                backgroundColor: selectedCategory.color + '08',
+                backgroundColor: '#FFFFFF',
                 border: `1px solid ${selectedCategory.color}30`
               }}
             >
@@ -374,8 +373,9 @@
                   {selectedCategory.examples.map((example, idx) => (
                     <div 
                       key={idx}
-                      className="text-gray-700 text-sm leading-relaxed p-4 bg-white rounded-lg border"
+                      className="text-sm leading-relaxed p-4 bg-white rounded-lg border"
                       style={{
+                        color: '#A9ABA8',
                         borderColor: selectedCategory.color + '20'
                       }}
                     >
@@ -466,7 +466,7 @@
               <div 
                 className="w-full h-[500px] rounded-2xl p-10 flex flex-col transition-all duration-300"
                 style={{ 
-                  backgroundColor: selectedCategory.color + '08',
+                  backgroundColor: '#FFFFFF',
                   border: `1px solid ${selectedCategory.color}30`
                 }}
               >
@@ -490,8 +490,9 @@
                     {selectedCategory.examples.map((example, idx) => (
                       <div 
                         key={idx}
-                        className="text-gray-700 text-sm leading-relaxed p-4 bg-white rounded-lg border transition-all duration-200"
+                        className="text-sm leading-relaxed p-4 bg-white rounded-lg border transition-all duration-200"
                         style={{
+                          color: '#A9ABA8',
                           borderColor: selectedCategory.color + '20'
                         }}
                       >
