@@ -293,7 +293,7 @@
       // Mobile view (< 480px)
       if (isMobile) {
         return (
-          <div ref={containerRef} className="h-full w-full flex items-center justify-center p-4" style={{ background: '#f0f2f5' }}>
+          <div ref={containerRef} className="h-full w-full flex items-center justify-center p-4" style={{ background: 'transparent' }}>
             <div className="main-container w-full max-h-full overflow-y-auto custom-scroll p-5">
               <div className={`mb-5 ${hasInteracted ? 'no-animate' : ''}`}>
                 <div 
@@ -388,7 +388,7 @@
 
       // Desktop view (>= 480px)
       return (
-        <div ref={containerRef} className="h-screen w-full flex items-center justify-center p-6" style={{ background: '#f0f2f5' }}>
+        <div ref={containerRef} className="h-screen w-full flex items-center justify-center p-6" style={{ background: 'transparent' }}>
           <div className="main-container flex gap-6 max-w-4xl w-full p-8" style={{ maxHeight: 'calc(100vh - 48px)' }}>
             {/* Left Side - Scroll Picker */}
             <div className="w-32 flex items-center justify-center flex-shrink-0">
