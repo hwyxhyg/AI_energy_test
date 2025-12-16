@@ -18,7 +18,7 @@
       height: 100%;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Microsoft YaHei",
                    "PingFang SC", sans-serif;
-      background: transparent;
+      background: #f0f2f5;
     }
     
     #root {
@@ -74,13 +74,18 @@
       background: rgba(145, 158, 168, 0.5);
     }
     
-    /* 阻止滚动穿透 */
     .scroll-container {
       overscroll-behavior: contain;
     }
     
     .custom-scroll {
       overscroll-behavior: contain;
+    }
+
+    .main-container {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
     }
   </style>
 </head>
@@ -207,8 +212,8 @@
       const scrollTimeout = useRef(null);
       const containerRef = useRef(null);
 
-      const ITEM_HEIGHT = 48;
-      const CONTAINER_HEIGHT = 360;
+      const ITEM_HEIGHT = 44;
+      const CONTAINER_HEIGHT = 320;
       const PADDING_TOP = (CONTAINER_HEIGHT - ITEM_HEIGHT) / 2;
 
       useEffect(() => {
@@ -219,7 +224,6 @@
         return () => window.removeEventListener('resize', handleResize);
       }, []);
 
-      // 阻止滚动穿透到父页面
       useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
@@ -289,90 +293,92 @@
       // Mobile view (< 480px)
       if (isMobile) {
         return (
-          <div ref={containerRef} className="h-full w-full bg-white p-4 pt-6 overflow-y-auto custom-scroll">
-            <div className={`mb-5 ${hasInteracted ? 'no-animate' : ''}`}>
-              <div 
-                className="ripple-container"
-                style={{ '--ripple-color': selectedCategory.color + '60' }}
-              >
+          <div ref={containerRef} className="h-full w-full flex items-center justify-center p-4" style={{ background: '#f0f2f5' }}>
+            <div className="main-container w-full max-h-full overflow-y-auto custom-scroll p-5">
+              <div className={`mb-5 ${hasInteracted ? 'no-animate' : ''}`}>
                 <div 
-                  className={`selector-box relative ${!hasInteracted ? 'selector-jump' : ''}`}
-                  style={{
-                    '--glow-color': `${rgb.r}, ${rgb.g}, ${rgb.b}`,
-                    border: `3px solid ${selectedCategory.color}`,
-                    backgroundColor: selectedCategory.color + '10'
-                  }}
+                  className="ripple-container"
+                  style={{ '--ripple-color': selectedCategory.color + '60' }}
                 >
-                  <select
-                    value={selectedIndex}
-                    onChange={handleSelectChange}
-                    className="w-full p-4 text-lg rounded-xl appearance-none cursor-pointer pr-12 font-bold bg-transparent"
-                    style={{ color: selectedCategory.color }}
-                  >
-                    {categories.map((category, index) => (
-                      <option key={index} value={index}>
-                        {category.text}
-                      </option>
-                    ))}
-                  </select>
-                  
                   <div 
-                    className={`absolute right-4 top-1/2 pointer-events-none ${!hasInteracted ? 'arrow-jump' : ''}`}
-                    style={{ 
-                      color: selectedCategory.color,
-                      transform: 'translateY(-50%)'
+                    className={`selector-box relative ${!hasInteracted ? 'selector-jump' : ''}`}
+                    style={{
+                      '--glow-color': `${rgb.r}, ${rgb.g}, ${rgb.b}`,
+                      border: `3px solid ${selectedCategory.color}`,
+                      backgroundColor: selectedCategory.color + '10'
                     }}
                   >
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path d="M6 9l6 6 6-6"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              
-              {!hasInteracted && (
-                <p 
-                  className="text-center text-base mt-4 font-bold animate-pulse"
-                  style={{ color: selectedCategory.color }}
-                >
-                  👆 点我切换策略
-                </p>
-              )}
-            </div>
-
-            <div 
-              className="w-full rounded-2xl p-5 transition-all duration-300"
-              style={{ 
-                backgroundColor: '#FFFFFF',
-                border: `1px solid ${selectedCategory.color}30`
-              }}
-            >
-              <div className="mb-4">
-                <p 
-                  className="text-base leading-relaxed font-medium"
-                  style={{ color: selectedCategory.color }}
-                >
-                  {selectedCategory.textaid}
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-xs uppercase tracking-wider mb-3 font-light" style={{ color: '#919EA8' }}>
-                  示例引用
-                </h3>
-                <div className="space-y-2">
-                  {selectedCategory.examples.map((example, idx) => (
+                    <select
+                      value={selectedIndex}
+                      onChange={handleSelectChange}
+                      className="w-full p-4 text-lg rounded-xl appearance-none cursor-pointer pr-12 font-bold bg-transparent"
+                      style={{ color: selectedCategory.color }}
+                    >
+                      {categories.map((category, index) => (
+                        <option key={index} value={index}>
+                          {category.text}
+                        </option>
+                      ))}
+                    </select>
+                    
                     <div 
-                      key={idx}
-                      className="text-sm leading-relaxed p-3 bg-white rounded-lg border"
-                      style={{
-                        color: '#919EA8',
-                        borderColor: selectedCategory.color + '20'
+                      className={`absolute right-4 top-1/2 pointer-events-none ${!hasInteracted ? 'arrow-jump' : ''}`}
+                      style={{ 
+                        color: selectedCategory.color,
+                        transform: 'translateY(-50%)'
                       }}
                     >
-                      {example}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <path d="M6 9l6 6 6-6"/>
+                      </svg>
                     </div>
-                  ))}
+                  </div>
+                </div>
+                
+                {!hasInteracted && (
+                  <p 
+                    className="text-center text-base mt-4 font-bold animate-pulse"
+                    style={{ color: selectedCategory.color }}
+                  >
+                    👆 点我切换策略
+                  </p>
+                )}
+              </div>
+
+              <div 
+                className="w-full rounded-2xl p-5 transition-all duration-300"
+                style={{ 
+                  backgroundColor: '#FAFAFA',
+                  border: `1px solid ${selectedCategory.color}30`
+                }}
+              >
+                <div className="mb-4">
+                  <p 
+                    className="text-base leading-relaxed font-medium"
+                    style={{ color: selectedCategory.color }}
+                  >
+                    {selectedCategory.textaid}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-xs uppercase tracking-wider mb-3 font-light" style={{ color: '#919EA8' }}>
+                    示例引用
+                  </h3>
+                  <div className="space-y-2">
+                    {selectedCategory.examples.map((example, idx) => (
+                      <div 
+                        key={idx}
+                        className="text-sm leading-relaxed p-3 bg-white rounded-lg border"
+                        style={{
+                          color: '#919EA8',
+                          borderColor: selectedCategory.color + '20'
+                        }}
+                      >
+                        {example}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -382,10 +388,10 @@
 
       // Desktop view (>= 480px)
       return (
-        <div ref={containerRef} className="h-screen w-full bg-white flex items-center justify-center px-8 py-4 overflow-hidden">
-          <div className="flex gap-10 max-w-5xl w-full">
+        <div ref={containerRef} className="h-screen w-full flex items-center justify-center p-6" style={{ background: '#f0f2f5' }}>
+          <div className="main-container flex gap-6 max-w-4xl w-full p-8" style={{ maxHeight: 'calc(100vh - 48px)' }}>
             {/* Left Side - Scroll Picker */}
-            <div className="w-48 flex items-center justify-center flex-shrink-0">
+            <div className="w-32 flex items-center justify-center flex-shrink-0">
               <div className="relative w-full" style={{ height: `${CONTAINER_HEIGHT}px` }}>
                 <style>{`
                   .scroll-container::-webkit-scrollbar { display: none; }
@@ -430,7 +436,7 @@
                     >
                       <div className="text-center">
                         <div 
-                          className="text-lg font-normal transition-colors duration-200"
+                          className="text-sm font-normal transition-colors duration-200"
                           style={{ 
                             color: selectedIndex === index ? category.color : '#bbb'
                           }}
@@ -449,14 +455,15 @@
             {/* Right Side - Details */}
             <div className="flex-1 flex items-center min-w-0">
               <div 
-                className="w-full h-full rounded-xl p-5 flex flex-col transition-all duration-300"
+                className="w-full rounded-xl p-5 flex flex-col transition-all duration-300"
                 style={{ 
                   backgroundColor: '#FAFAFA',
-                  border: `1px solid ${selectedCategory.color}15`
+                  border: `1px solid ${selectedCategory.color}15`,
+                  height: `${CONTAINER_HEIGHT}px`
                 }}
               >
                 {/* 策略说明 */}
-                <div className="mb-3 flex-shrink-0 pb-3" style={{ borderBottom: `1px solid ${selectedCategory.color}10` }}>
+                <div className="mb-4 flex-shrink-0">
                   <p 
                     className="text-sm leading-relaxed"
                     style={{ color: selectedCategory.color }}
