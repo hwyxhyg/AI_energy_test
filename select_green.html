@@ -24,6 +24,7 @@
     #root {
       height: 100%;
       overflow: hidden;
+      background: rgba(238,238,237,1);
     }
     
     @keyframes bounce-jump {
@@ -83,8 +84,25 @@
     }
 
     .main-container {
-      background: white;
+      background: transparent;
       border-radius: 24px;
+    }
+
+    .radial-gradient-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 8px;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .scroll-container::-webkit-scrollbar { 
+      display: none; 
+    }
+    .scroll-container { 
+      scrollbar-width: none; 
+      -ms-overflow-style: none; 
     }
   </style>
 </head>
@@ -128,7 +146,7 @@
           '"不久之后，大部分新增电力将来自天然气燃气轮机和燃气发动机。这些设备正在快速建设中。"',
           '"如果我们利用这些已关闭的碳氢化合物发电厂（包括天然气和煤炭发电厂）的能源，我们就能为一支核反应堆提供一百多年的燃料。想想看，中国正在建造燃煤电厂来为其人工智能发展提供动力，而我们却可以利用这些已关闭的碳氢化合物发电厂的能源，实现零排放，这岂不是很有意思吗？我真心认为，这应该是本届政府和国会的首要任务，尽快将这些小型模块化反应堆（SMR）投入使用，并安装在我们已经拥有涡轮机和输电线路的地方。"',
           '"我们已经看到了一些混合能源计划，就像我刚才提到的路易斯安那州，那里正在将太阳能和燃气轮机结合起来。你会发现，通过充分利用燃气轮机以及风能和太阳能，可以减少燃气轮机的数量和天然气的消耗量。"',
-          '"未来你会越来越多地看到，那些既没有水冷难题也没有传输难题的数据中心被提及"'
+          '"未来你会越来越多地看到，那些既没有水冷难题也没有传输难题的数据中心被提及。"'
         ]
       },
       { 
@@ -137,10 +155,10 @@
         color: '#484f57',
         textaid:'单方面披露向好的数据',
         examples: [
-          '"2017年至2023年间，数据中心行业对美国GDP的贡献总额高达3.5万亿美元"',
-          '"(2017-2023年间，数据中心行业让)美国直接雇佣了超过60万名员工，并带动了470万个就业岗位"',
-          '"该行业在2023年缴纳了1630亿美元的联邦、州和地方税收，为公共安全、交通、教育等重要的社区优先事项提供了持续的资金支持"',
-          '"根据劳伦斯伯克利国家实验室的研究，这样做已经使能源效率比分散的计算资源提高了约600%"',
+          '"2017年至2023年间，数据中心行业对美国GDP的贡献总额高达3.5万亿美元。"',
+          '"(2017-2023年间，数据中心行业让)美国直接雇佣了超过60万名员工，并带动了470万个就业岗位。"',
+          '"该行业在2023年缴纳了1630亿美元的联邦、州和地方税收，为公共安全、交通、教育等重要的社区优先事项提供了持续的资金支持。"',
+          '"根据劳伦斯伯克利国家实验室的研究，这样做已经使能源效率比分散的计算资源提高了约600%。"',
         ]
       },
       { 
@@ -184,7 +202,7 @@
         color: '#484f57',
         textaid:'以宏大/抽象的数据回避具体的问题',
         examples: [
-          '"服务器温度提升到 80°F"',
+          '"服务器温度提升到 80°F。"',
           '"这项5000亿美元的投资将使美国及其全球战略伙伴能够开启下一代人工智能时代。"',
           '"数据中心行业预计为当地经济贡献7.4万个就业岗位、55亿美元的劳动收入和91亿美元的GDP。"',
           '"该行业在2023年缴纳了1630亿美元的联邦、州和地方税收。"'
@@ -385,33 +403,20 @@
         );
       }
 
-      // Desktop view (>= 480px)
+      // Desktop view (>= 480px) - 新的径向渐变设计
       return (
         <div ref={containerRef} className="h-screen w-full flex items-center justify-center p-6" style={{ background: 'transparent' }}>
-          <div className="main-container flex gap-6 max-w-4xl w-full p-8" style={{ maxHeight: 'calc(100vh - 48px)' }}>
-            {/* Left Side - Scroll Picker */}
+          <div className="main-container flex gap-6 max-w-4xl w-full p-8" style={{ maxHeight: 'calc(100vh - 48px)', background: 'transparent' }}>
+            {/* Left Side - Scroll Picker with Radial Gradient */}
             <div className="w-32 flex items-center justify-center flex-shrink-0">
               <div className="relative w-full" style={{ height: `${CONTAINER_HEIGHT}px` }}>
-                <style>{`
-                  .scroll-container::-webkit-scrollbar { display: none; }
-                  .scroll-container { scrollbar-width: none; -ms-overflow-style: none; }
-                `}</style>
                 
+                {/* 径向渐变横线 */}
                 <div 
-                  className="absolute inset-0 pointer-events-none z-10"
+                  className="radial-gradient-line"
                   style={{
-                    background: 'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0) 80%, rgba(255,255,255,1) 100%)'
-                  }}
-                />
-                
-                <div 
-                  className="absolute z-20 w-full pointer-events-none rounded-lg"
-                  style={{
-                    top: `${PADDING_TOP}px`,
-                    height: `${ITEM_HEIGHT}px`,
-                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.04) 50%, rgba(0,0,0,0.04) 50%, rgba(0,0,0,0.02) 100%)',
-                    border: '1px solid rgba(0,0,0,0.06)',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
+                    top: `${PADDING_TOP + ITEM_HEIGHT / 2 +8}px`,
+                    background: 'radial-gradient(ellipse at center, rgba(118, 223, 243, 1) 0%, rgba(118, 223, 243, 0.1) 56.52%, rgba(118, 223, 243, 0) 100%)'
                   }}
                 />
 
@@ -429,8 +434,8 @@
                       className="flex items-center justify-center transition-all duration-200 cursor-pointer"
                       style={{
                         height: `${ITEM_HEIGHT}px`,
-                        opacity: selectedIndex === index ? 1 : 0.2,
-                        transform: selectedIndex === index ? 'scale(1.08)' : 'scale(0.88)',
+                        opacity: selectedIndex === index ? 1 : 0.4,
+                        transform: selectedIndex === index ? 'scale(1.05)' : 'scale(0.9)',
                       }}
                     >
                       <div className="text-center">
@@ -456,8 +461,7 @@
               <div 
                 className="w-full rounded-xl p-5 flex flex-col transition-all duration-300"
                 style={{ 
-                  backgroundColor: '#FAFAFA',
-                  border: `1px solid ${selectedCategory.color}15`,
+                  backgroundColor: 'transparent',
                   height: `${CONTAINER_HEIGHT}px`
                 }}
               >
@@ -473,7 +477,7 @@
 
                 {/* 示例引用 */}
                 <div className="flex-1 flex flex-col min-h-0">
-                  <h3 className="text-xs uppercase tracking-wider mb-2 font-light flex-shrink-0" style={{ color: '#919EA8' }}>
+                  <h3 className="text-xs uppercase tracking-wider mb-2 font-light flex-shrink-0" style={{ color: '#6A788A' }}>
                     示例引用
                   </h3>
                   <div className="flex-1 overflow-y-auto custom-scroll pr-1">
