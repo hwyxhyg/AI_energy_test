@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI使用习惯测试</title>
+    <title>测测您属于哪种数字环保风格！</title>
     <style>
         * {
             margin: 0;
@@ -190,46 +190,52 @@
 
         .result h2 {
             color: #666F76;
-            font-size: 13px;
-            margin-bottom: 12px;
+            font-size: 15px;
+            margin-bottom: 20px;
+            font-weight: 500;
         }
 
         .result .score {
-            font-size: 12px;
-            font-weight: bold;
-            color: #76DFF3;
-            margin: 12px 0;
+            display: none;
         }
 
         .result .level {
-            font-size: 13px;
-            font-weight: bold;
-            margin: 12px 0;
+            font-size: 28px;
+            font-weight: 600;
+            margin: 25px 0;
+            letter-spacing: 1px;
+            line-height: 1.4;
         }
 
         .result .description {
-            font-size: 11px;
-            color: #666;
-            line-height: 1.5;
-            margin: 12px 0;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.8;
+            margin: 25px 0;
             text-align: left;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #76DFF3;
         }
 
         .btn-restart {
-            margin-top: 15px;
+            margin-top: 25px;
             background: #76DFF3;
             color: #000000;
+            padding: 10px 30px;
+            font-size: 13px;
         }
 
         .btn-restart:hover {
             background: #5dd0e6;
         }
 
-        .level-S { color: #76DFF3; }
-        .level-A { color: #5dd0e6; }
-        .level-B { color: #666F76; }
-        .level-C { color: #A9ABA8; }
-        .level-D { color: #8a8c89; }
+        .level-S { color: #00C9A7; }
+        .level-A { color: #00A8CC; }
+        .level-B { color: #FFB84D; }
+        .level-C { color: #FF8C42; }
+        .level-D { color: #9B9B9B; }
 
         .scenario {
             background: #f5f5f5;
@@ -430,37 +436,32 @@
         function getLevel(score) {
             if (score >= 80) {
                 return {
-                    level: 'S级',
                     title: '绿色先锋',
-                    description: '您已经是高效使用AI的典范！您的提问精准、表达清晰，在获得所需信息的同时，也最大程度减少了计算资源消耗。继续保持这种优秀习惯，您正在引领更可持续的数字未来。',
+                    description: '您已经是高效使用AI的典范！您的提问精准、表达清晰，在获得所需信息的同时,也最大程度减少了计算资源消耗。继续保持这种优秀习惯，您正在引领更可持续的数字未来。',
                     class: 'level-S'
                 };
             } else if (score >= 60) {
                 return {
-                    level: 'A级',
                     title: '环保达人',
                     description: '您的AI使用方式相当出色！您懂得如何通过清晰的指令获得准确回复，有效平衡了需求与资源消耗。您已掌握高效对话的核心技巧，离完美只差一步之遥。',
                     class: 'level-A'
                 };
             } else if (score >= 40) {
                 return {
-                    level: 'B级',
                     title: '意识觉醒者',
                     description: '您已开始关注AI使用的效率与影响，这是很棒的第一步！建议尝试更具体的提问方式，比如明确对话需求，限制输出格式或长度，这能让对话更高效，也能帮助AI更好地理解您的需求。',
                     class: 'level-B'
                 };
             } else if (score >= 20) {
                 return {
-                    level: 'C级',
                     title: '探索者',
                     description: '您正在探索与AI协作的各种可能，这种开放性很有价值。如果想要提升效率，可以尝试提前规划问题要点，或者一次性提供更完整的背景信息——这些小的改变会让对话更流畅。',
                     class: 'level-C'
                 };
             } else {
                 return {
-                    level: 'D级',
                     title: '自由创作者',
-                    description: '您喜欢让AI自由发挥创造力，这能带来许多意想不到的灵感。如果您希望同时提升效率，可以试试在提问时增加一些简单指引，比如“请用三点概括”或“控制在200字内”——这样既能保持创意，又能减少不必要的资源消耗。',
+                    description: '您喜欢让AI自由发挥创造力，这能带来许多意想不到的灵感。如果您希望同时提升效率，可以试试在提问时增加一些简单指引，比如"请用三点概括"或"控制在200字内"——这样既能保持创意，又能减少不必要的资源消耗。',
                     class: 'level-D'
                 };
             }
@@ -483,8 +484,7 @@
             const score = calculateScore();
             const result = getLevel(score);
 
-            document.getElementById('scoreDisplay').textContent = `您的得分: ${score}分`;
-            document.getElementById('levelDisplay').innerHTML = `<span class="${result.class}">${result.level} - ${result.title}</span>`;
+            document.getElementById('levelDisplay').innerHTML = `<span class="${result.class}">${result.title}</span>`;
             document.getElementById('descriptionDisplay').innerHTML = result.description;
 
             document.querySelectorAll('.page').forEach(page => {
